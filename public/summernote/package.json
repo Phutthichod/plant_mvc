@@ -1,0 +1,34 @@
+{
+  "name": "summernote-bricks",
+  "version": "1.0.4",
+  "description": "A summernote module to add user-friendly components to the wysiwyg editor",
+  "main": "dist/summernote-extensions.dist.js",
+  "keywords": [
+    "summernote bricks",
+    "summernote module",
+    "summernote plugin"
+  ],
+  "homepage": "https://eissasoubhi.github.io/summernote-bricks",
+  "bugs": "https://github.com/eissasoubhi/summernote-bricks/issues",
+  "repository": "https://github.com/eissasoubhi/summernote-bricks",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.7.0",
+    "gulp": "^3.9.1",
+    "gulp-print": "^2.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-template": "^4.0.0",
+    "http-server": "^0.10.0",
+    "jquery": "^3.1.1",
+    "summernote": "0.8.2",
+    "watchify": "^3.9.0",
+    "yargs": "^9.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node node_modules/http-server/bin/http-server -p 9090",
+    "watch": "watchify src/summernote-extensions.js -o dist/summernote-extensions.dist.js -v"
+  },
+  "author": "Eissa Soubhi <eissa.soubhi@gmail.com> (http://eissa-soubhi.com/)",
+  "license": "MIT"
+}

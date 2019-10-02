@@ -1,0 +1,18 @@
+php_flag display_errors off
+php_value error_reporting 9999
+
+RewriteEngine On
+RewriteBase /tomato_mvc/
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l
+
+php_value post_max_size 5000M
+php_value memory_limit  1024M
+php_value upload_max_filesize 200M
+php_value max_execution_time 3000
+php_value max_input_time 3000
+php_value session.gc_maxlifetime 1200
+php_value max_input_vars 30000
+RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
