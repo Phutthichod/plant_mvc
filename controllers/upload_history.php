@@ -1,5 +1,5 @@
 <?php
-class Upload extends Controller
+class Upload_history extends Controller
 {
 	private $user_id;
 	private $plant_id;
@@ -15,16 +15,29 @@ class Upload extends Controller
 
 	public function index()
 	{
-		
+
 		//Session:init();
 		//Session::get([key]);
 		//$check =Char_data_Model::update_data();
 		//print_r($check);
-		$this->view->user_id = $this->user_id;
-		$this->view->plant_type = $this->plant_type;
-		$this->view->plant_id = $this->plant_id;
-		$this->view->render('upload/index');
+
+		$this->view->name_type = $this->check_type();
+		$this->view->render('upload_history/index');
 	}
-	
-	
+	public function check_type()
+	{
+		$check_type = $this->plant_type;
+		$name_type="";
+		switch ($check_type) {
+			case 1:
+				$name_type = "Characterization";
+				break;
+			case 2:
+				$name_type = "Location";
+				break;
+			default:
+				$name_type = "Genome";
+		}
+		return $name_type;
+	}
 }

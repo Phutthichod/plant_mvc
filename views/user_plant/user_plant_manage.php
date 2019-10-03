@@ -22,29 +22,29 @@
                             <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon">
                                 <i class="icon-drop"  style="color:blue; "></i></button>
                             <!-- <p>123</p> -->
-                            <i   ></i>PHYNOTYPE</div>
+                            <i   ></i>CHARACTER</div>
                     </div>
                 </div>
                 <br>
 
 
-                <div class="card link" link=3  style="width:445px">
+                <div class="card link" link=2  style="width:445px">
                     <div class="card-body">
                         <div class="preview">
                             <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon" >
                                 <i class="icon-hourglass" style="color:green;"></i></button>
-                            <i ></i> GENOME</div>
+                            <i ></i>LOCATION</div>
                     </div>
                 </div>
                 <br>
 
 
-                <div class="card link"  link=2 style="width:445px">
+                <div class="card link"  link=3 style="width:445px">
                     <div class="card-body">
                         <div class="preview">
                             <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon">
                                 <i class="icon-location-pin"  style="color:red;"></i></button>
-                            <i   type="text"value="  "></i>LOCATION</div>
+                            <i   type="text"value="  "></i>GENOME</div>
                     </div>
                 </div>
 
@@ -115,7 +115,7 @@ let base_url = "<?php echo URL; ?>";
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                window.location.href = base_url+"upload/";
+                window.location.href = base_url+"upload_history/";
                 console.log(this.responseText);
             }
         };

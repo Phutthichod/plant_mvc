@@ -13,6 +13,6 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 
 //paths
-define('URL', 'http://localhost/tomato_mvc/');
+define('URL', 'http://localhost/mvc_plant/');
 
 define('LIBS', 'libs/');

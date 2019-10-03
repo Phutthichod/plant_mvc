@@ -1,6 +1,6 @@
 <?php
 
-class Upload_Model extends Model
+class Upload_history_Model extends Model
 {
 
     public function __construct()
