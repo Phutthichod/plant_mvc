@@ -16,3 +16,4 @@ define('DB_PASS', '');
 define('URL', 'http://localhost/mvc_plant/');
 
 define('LIBS', 'libs/');
+//pppp

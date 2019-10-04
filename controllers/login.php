@@ -31,13 +31,16 @@ class Login extends Controller {
 	function check_login()
 	{	
 		$check =$this->model->check_login($_POST['username'],$_POST['password']);
+		
 		if($check === "Blocked")
 		{
 			echo "<script> alert('Account blocked by admin. Please contact admin.'); window.location='../login'</script>";
 		}	
 		else if($check)
 		{
+			if(Session::get('member')['permission'] == "member")
 			header('location: ../user_plant');
+			else header('location: ../user_manage');
 		}
 		else
 		{

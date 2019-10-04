@@ -7,7 +7,7 @@ class user_plant extends Controller {
 		parent::__construct();	
 		// Session::set("user_id",4);
 		
-		$this->user_id = Session::get("member")['id_member'];
+		$this->user_id = Session::get("member")['user_id'];
 		// Session::destroy();
 	}
 	

@@ -1,0 +1,49 @@
+/* @import "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css"; */
+@import "https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css";
+.table th .badge, .table td .badge {
+    margin-bottom: 0;
+    padding: 5px;
+    width: 100px;
+}
+button:not(:disabled), [type="button"]:not(:disabled), [type="reset"]:not(:disabled), [type="submit"]:not(:disabled) {
+    cursor: pointer;
+    width: 100px;
+    text-align: center;
+}
+.btn.btn-fw {
+    height: 26px;
+    padding: 0;
+    min-width: 150px;
+}
+th{
+    width: 196px;
+    text-align: center;
+}
+td{
+    text-align: center;
+}
+.table th .badge, .table td .badge {
+    margin-bottom: 0;
+    font-size: 1;
+    font: 17px;
+    font-family: "Open Sans", sans-serif;
+    /* color: white; */
+    padding: 8px;
+
+
+}
+.swal-footer {
+    display: flex;
+    flex-direction: row-reverse;
+    text-align: right;
+    padding-top: 13px;
+    margin-top: 13px;
+    padding: 13px 16px;
+    border-radius: inherit;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.btn-edit,.btn-delete{
+    padding: 0;
+    height: 45px;
+}

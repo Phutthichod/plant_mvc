@@ -9,11 +9,11 @@ class Login_Model extends Model
 
 	public function check_login($username,$password)
 	{
-		$sth = $this->db->prepare("SELECT *  FROM member WHERE 
+		$sth = $this->db->prepare("SELECT *  FROM member_1 WHERE 
 				username = :username AND password = :password");
 		$sth->execute(array(
 			':username' => $username,
-			':password' => md5($password)
+			':password' => ($password)
 		));
 		
 		$data = $sth->fetch();
