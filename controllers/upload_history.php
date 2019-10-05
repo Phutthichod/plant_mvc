@@ -12,14 +12,8 @@ class Upload_history extends Controller
 		$this->plant_type = Session::get('plant_type');
 		$this->plant_id = Session::get('plant_id');
 	}
-	public function check_data()
-	{
-		$file = $_FILES['upl'];
-		$this->view->file = $file;
-		//$this->view->List = Char_data_Model::getAllFact();
-		$this->view->table_value = Char_data_Model::get_all_table_value();
-		$this->view->render('upload/data_verify');
-	}
+
+
 	public function index()
 	{
 
@@ -31,18 +25,19 @@ class Upload_history extends Controller
 		$this->view->name_type = $this->check_type();
 		$this->view->render('upload_history/index');
 	}
+
 	public function excel_to_array_char()
 	{
 		$file = $_FILES['upl'];
 		// $table_value = Char_data_Model::get_all_table_value();
 		include("libs/PHPExcel-1.8/Classes/PHPExcel.php");
 		//$List=$this->List;
-		$tmpFile =$file["tmp_name"];
-		$fileName =$file["name"];  // เก็บชื่อไฟล์
+		$tmpFile = $file["tmp_name"];
+		$fileName = $file["name"];  // เก็บชื่อไฟล์
 		$info = pathinfo($fileName);
 		$allow_file = array("csv", "xls", "xlsx");
-		print_r($info);         // ข้อมูลไฟล์   
-		print_r($_fileup);
+		//print_r($info);         // ข้อมูลไฟล์   
+		//print_r($_fileup);
 		if ($fileName != "" && in_array($info['extension'], $allow_file)) {
 			// อ่านไฟล์จาก path temp ชั่วคราวที่เราอัพโหลด
 			$objPHPExcel = PHPExcel_IOFactory::load($tmpFile);
@@ -52,7 +47,7 @@ class Upload_history extends Controller
 			$cell_collection = $objPHPExcel->getActiveSheet()->getCellCollection();
 
 			// วนลูปแสดงข้อมูล
-			$data_arr = array();
+			$data_arr_excel = array();
 			foreach ($cell_collection as $cell) {
 				// ค่าสำหรับดูว่าเป็นคอลัมน์ไหน เช่น A B C ....
 				$column = $objPHPExcel->getActiveSheet()->getCell($cell)->getColumn();
@@ -82,36 +77,28 @@ class Upload_history extends Controller
 					// "CD"=>"81","CE"=>"82","CF"=>"83"
 				);
 				if ($row >= $start_row) {
-					$data_arr[$row - $start_row][$col_name[$column]] = $data_value;
+					$data_arr_excel[$row - $start_row][$col_name[$column]] = $data_value;
 				}
 			}
-			print_r($data_arr);
-		}
-		function prepare_data($data)
-		{
-			// กำหนดชื่อ filed ให้ตรงกับ $col_name ด้านบน
-			$arr_field = array();
-			if (is_array($data)) {
-				foreach ($arr_field as $v) {
-					if (!isset($data[$v])) {
-						$data[$v] = "";
-					}
-				}
-			}
-			return $data;
-		}
-		function search_id($item, $List1)
-		{
-			$chk = false;
-			for ($i = 0; $i < count($List1); $i++) {
-				if ($List1[$i]['accession_number'] == $item) {
-					$chk = true;
-					break;
-				}
-			}
-			return $chk;
+			//print_r($data_arr_excel[0]);
+			return $data_arr_excel;
 		}
 	}
+
+
+
+	function search_id($item, $List1)
+	{
+		$chk = false;
+		for ($i = 0; $i < count($List1); $i++) {
+			if ($List1[$i]['accession_number'] == $item) {
+				$chk = true;
+				break;
+			}
+		}
+		return $chk;
+	}
+
 
 	public function check_type()
 	{
@@ -124,6 +111,33 @@ class Upload_history extends Controller
 		return $name_type;
 	}
 
+	/*----------------------------- Check fail characterristic fucntion ------------------------------------------*/
+	public function check_wrongHead_char()
+	{
+		$check_head_char = true;
+		$data_arr_excel = $this->excel_to_array_char();
+		print_r($data_arr_excel);
+		$format = ["Accession number", "Hypocotyl colour", "Hypocotyl colour intensity", "Hypocotyl pubescence", "Primary leaf length (mm)", "Primary leaf width (mm)", "Plant growth type", "Plant size", "Vine length (cm)", "Stem pubescence density", "Stem internode length", "Foliage density", "Number of leaves under 1st inflorescence", "Leaf attitude", "Leaf type", "Degree of leaf dissection", "Anthocyanin colouration of leaf veins", "Inflorescence type", "Corolla colour", "Corolla blossom type", "Flower sterility type", "Petal length (cm)", "Sepal length (cm)", "Style position", "Style shape", "Style hairiness", "Stamen length (cm)", "Dehiscence", "Exterior colour of immature fruit", "Presence of green (shoulder) trips on the fruit", "Intensity of greenback", "Fruit pubescence", "Predominant fruit shape", "Fruit size", "Fruit size homogeneity", "Fruit weight (g)", "Fruit length (mm)", "Fruit width (mm)", "Exterior colour of mature fruit", "Intensity of exterior colour", "Ribbing at calyx end", "Easiness of fruit to detach from pedicel", "Fruit shoulder shape", "Pedicel length (mm)", "Pedicel length from abscission layer", "Presence/absence of jiontless pedicel", "Width of pedicel scar (mm)", "Size of corky area around pedicel scar (cm)", "Easiness of fruit wall (skin) to be peeled", "Skin colour of ripe fruit", "Thickness of fruit wall (skin) (mm)", "Thickness of pericarp (mm)", " Flesh colour of peiricarp (interior)", " Flesh colour intensity", "Colour (intensity) of core", "Fruit cross-sectional shape", "Size of score (mm)", "Number of locules", "Shape of pistil scar", "Fruit blossom end shape", "Blossom end scar condition", "Fruit firmness (after storage)", "Seed shape", "Seed colour", "1,000 seed weight (g)"];
+
+		$wrong_head = array();
+
+		if (sizeof($data_arr_excel[0]) == sizeof($format)) {
+			return $check_head_char;
+		} else {
+			for ($i = 0; $i < sizeof($data_arr_excel[0]); $i++) {
+				if ($data_arr_excel[0][i] == null) {
+					array_push($wrong_head, $i);
+				}
+			}
+			print_r($wrong_head);
+			//return $wrong_head;
+		}
+	}
+
+
+
+
+	/*----------------------------- Check fail fucntion ------------------------------------------*/
 
 
 	public function excel_upload()

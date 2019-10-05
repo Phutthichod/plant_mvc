@@ -2,11 +2,7 @@ php_flag display_errors off
 php_value error_reporting 9999
 
 RewriteEngine On
-<<<<<<< HEAD
 RewriteBase /plant_mvc/
-=======
-RewriteBase /mvc_plant/
->>>>>>> 93bed3ddc87b07d3d724dd17bd6fd1d9375e5639
 
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
