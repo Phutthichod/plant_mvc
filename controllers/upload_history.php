@@ -31,7 +31,6 @@ class Upload_history extends Controller
 		$this->view->name_type = $this->check_type();
 		$this->view->render('upload_history/index');
 	}
-/*-----------------------------------------------------------เปลี่ยน excel เป็น array -----------------------------*/
 	public function excel_to_array_char()
 	{
 		$file = $_FILES['upl'];
@@ -119,12 +118,6 @@ class Upload_history extends Controller
 		$check_type = $this->plant_type;
 		$name_type = "";
 		switch ($check_type) {
-			case 1:
-				$name_type = "Characterization";
-				break;
-			case 2:
-				$name_type = "Location";
-				break;
 			default:
 				$name_type = "Genome";
 		}

@@ -165,7 +165,11 @@
              <div class="tab-pane fade active show" id="home-5-1" role="tabpanel" aria-labelledby="tab-5-1">
                  <div class="m-4">
                      <h2>Upload <?php echo $this->name_type; ?> File </h2>
+<<<<<<< HEAD
                      <form id="upload" method="post" action="<?php echo URL ?>upload_history/excel_to_array_char" enctype="multipart/form-data">
+=======
+                     <form id="upload" method="post" action="<?php echo URL ?>upload/check_data" enctype="multipart/form-data">
+>>>>>>> 93bed3ddc87b07d3d724dd17bd6fd1d9375e5639
                          <div id="drop">
                              <a>Browse</a> <span class="font-20 padding-left-10"> Please select a file to upload.</span>
                              <input id="file_upload" type="file" name="upl" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
