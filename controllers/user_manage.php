@@ -4,6 +4,7 @@ class user_manage extends Controller {
 
 	function __construct() {
 		parent::__construct();	
+		Session::set("sidebar","user_manage");
 	}
 	
 	function index() 
