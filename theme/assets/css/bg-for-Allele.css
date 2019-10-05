@@ -1,0 +1,66 @@
+
+	.bg-for-G{
+		background-color: #E91E63 ;
+		display: inline-block;
+	}
+	.bg-for-A{
+		background-color: #58d8a3 ;
+		display: inline-block;
+	}
+	.bg-for-C{
+		background-color: #ffaf00 ;
+		display: inline-block;
+	}
+	.bg-for-AT{
+		background-color: #8A2BE2 ;
+		display: inline-block;
+	}
+	.bg-for-AC{
+		background-color: #7FFF00 ;
+		display: inline-block;
+	}
+	.bg-for-AG{
+		background-color: #A52A2A ;
+		display: inline-block;
+	}
+	.bg-for-TC{
+		background-color: green ;
+		display: inline-block;
+	}
+	.bg-for-T{
+		background-color: #2196f3 ;
+		display: inline-block;
+	}
+	.bg-for-TG{
+		background-color: cyan ;
+		display: inline-block;
+	}
+	.bg-for-CG{
+		background-color: #FF1493 ;
+		display: inline-block;
+	}
+	.bg-for-ATC{
+		background-color: #CD5C5C ;
+		display: inline-block;
+	}
+	.bg-for-ATG{
+		background-color: #F0E68C ;
+		display: inline-block;
+	}
+	.bg-for-ACG{
+		background-color: #ADD8E6 ;
+		display: inline-block;
+	}
+	.bg-for-TCG{
+		background-color: #FF4500 ;
+		display: inline-block;
+	}
+	.bg-for-ATCG{
+		background-color: #EE82EE ;
+		display: inline-block;
+	}
+	.bg-for-nul
+	{
+		background-color: #8ba2b5 ;
+		display: inline-block;
+	}
