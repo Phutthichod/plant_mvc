@@ -1,28 +1,27 @@
 <?php
+require 'models/char_data_model.php';
+require 'models/location_model.php';
+require 'models/genome_data_model.php';
 class Upload_history extends Controller
 {
+	//จาก upload
 	private $user_id;
 	private $plant_id;
 	private $plant_type;
+	private $table;
+
 	public function __construct()
 	{
 		Auth::handleLogin();
 		parent::__construct();
+		$this->table = Char_data_Model::get_all_table_value();
 		$this->user_id = Session::get('member')['id_member'];
 		$this->plant_type = Session::get('plant_type');
 		$this->plant_id = Session::get('plant_id');
 	}
-	public function check_data()
-	{
-		$file = $_FILES['upl'];
-		$this->view->file = $file;
-		//$this->view->List = Char_data_Model::getAllFact();
-		$this->view->table_value = Char_data_Model::get_all_table_value();
-		$this->view->render('upload/data_verify');
-	}
+
 	public function index()
 	{
-
 		//Session:init();
 		//Session::get([key]);
 		//$check =Char_data_Model::update_data();
@@ -31,22 +30,27 @@ class Upload_history extends Controller
 		$this->view->name_type = $this->check_type();
 		$this->view->render('upload_history/index');
 	}
+
+	//จาก helper
 	public function excel_to_array_char()
 	{
+		// print_r($this->table) ;
+		// echo "<br/>";
+
 		$file = $_FILES['upl'];
 		// $table_value = Char_data_Model::get_all_table_value();
 		include("libs/PHPExcel-1.8/Classes/PHPExcel.php");
-		//$List=$this->List;
 		$tmpFile =$file["tmp_name"];
 		$fileName =$file["name"];  // เก็บชื่อไฟล์
 		$info = pathinfo($fileName);
 		$allow_file = array("csv", "xls", "xlsx");
-		print_r($info);         // ข้อมูลไฟล์   
-		print_r($_fileup);
+
+		//print_r($info);  // ข้อมูลไฟล์   
+		//print_r($fileName);
+
 		if ($fileName != "" && in_array($info['extension'], $allow_file)) {
 			// อ่านไฟล์จาก path temp ชั่วคราวที่เราอัพโหลด
 			$objPHPExcel = PHPExcel_IOFactory::load($tmpFile);
-
 
 			// ดึงข้อมูลของแต่ละเซลในตารางมาไว้ใช้งานในรูปแบบตัวแปร array
 			$cell_collection = $objPHPExcel->getActiveSheet()->getCellCollection();
@@ -81,12 +85,26 @@ class Upload_history extends Controller
 					// "BV"=>"73","BW"=>"74","BX"=>"75","BY"=>"76","BZ"=>"77","CA"=>"78","CB"=>"79","CC"=>"80",
 					// "CD"=>"81","CE"=>"82","CF"=>"83"
 				);
-				if ($row >= $start_row) {
-					$data_arr[$row - $start_row][$col_name[$column]] = $data_value;
+					if ($row >= $start_row) {
+						$data_arr[$row - $start_row][$col_name[$column]] = $data_value;
+					}
 				}
-			}
-			print_r($data_arr);
+			//print_r($data_arr);
+			return $data_arr;
 		}
+		
+	}
+	
+	function check_inva()
+	{
+		$arr_excel = $this->excel_to_array_char();
+		print_r($arr_excel);
+		
+		echo "asasas";
+
+	}
+	
+	
 		function prepare_data($data)
 		{
 			// กำหนดชื่อ filed ให้ตรงกับ $col_name ด้านบน
@@ -100,6 +118,7 @@ class Upload_history extends Controller
 			}
 			return $data;
 		}
+
 		function search_id($item, $List1)
 		{
 			$chk = false;
@@ -111,7 +130,8 @@ class Upload_history extends Controller
 			}
 			return $chk;
 		}
-	}
+
+	
 
 	public function check_type()
 	{
@@ -123,8 +143,6 @@ class Upload_history extends Controller
 		}
 		return $name_type;
 	}
-
-
 
 	public function excel_upload()
 	{
