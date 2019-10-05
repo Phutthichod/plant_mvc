@@ -28,7 +28,6 @@ class Upload_history extends Controller
 		//print_r($check);
 
 		$this->view->name_type = $this->check_type();
-		// echo $this->plant_type;
 		$this->view->render('upload_history/index');
 	}
 
@@ -98,53 +97,306 @@ class Upload_history extends Controller
 	
 	function check_inva()
 	{
-		$arr_excel = $this->excel_to_array_char();
-		print_r($arr_excel);
+		$format = ["Accession number", "Hypocotyl colour", "Hypocotyl colour intensity", "Hypocotyl pubescence", "Primary leaf length (mm)", 
+        "Primary leaf width (mm)", "Plant growth type", "Plant size", "Vine length (cm)", "Stem pubescence density", "Stem internode length", 
+        "Foliage density", "Number of leaves under 1st inflorescence", "Leaf attitude", "Leaf type", "Degree of leaf dissection", "Anthocyanin colouration of leaf veins",
+        "Inflorescence type", "Corolla colour", "Corolla blossom type", "Flower sterility type", "Petal length (cm)", "Sepal length (cm)", 
+        "Style position", "Style shape", "Style hairiness", "Stamen length (cm)", "Dehiscence", "Exterior colour of immature fruit", "Presence of green (shoulder) trips on the fruit",
+        "Intensity of greenback", "Fruit pubescence", "Predominant fruit shape", "Fruit size", "Fruit size homogeneity", "Fruit weight (g)", 
+        "Fruit length (mm)", "Fruit width (mm)", "Exterior colour of mature fruit", "Intensity of exterior colour", "Ribbing at calyx end",
+        "Easiness of fruit to detach from pedicel", "Fruit shoulder shape", "Pedicel length (mm)", "Pedicel length from abscission layer", "Presence/absence of jiontless pedicel", 
+        "Width of pedicel scar (mm)", "Size of corky area around pedicel scar (cm)", "Easiness of fruit wall (skin) to be peeled", "Skin colour of ripe fruit",
+        "Thickness of fruit wall (skin) (mm)", "Thickness of pericarp (mm)", " Flesh colour of peiricarp (interior)", " Flesh colour intensity", 
+        "Colour (intensity) of core", "Fruit cross-sectional shape", "Size of score (mm)", "Number of locules", "Shape of pistil scar", "Fruit blossom end shape",
+        "Blossom end scar condition", "Fruit firmness (after storage)", "Seed shape", "Seed colour", "1,000 seed weight (g)"];
+
+		$int_value = ["primary_leaf_length_mm", "primary_leaf_width_mm", "vine_length_cm", "petal_length_cm", "sepal_length_cm", "stamen_length_cm", 
+        "fruit_weight_g", "fruit_length_mm", "fruit_width_mm", "pedicel_length_mm", "pedicel_length_from_abscission_layer", "width_of_pedicel_scar_mm", 
+        "size_of_corky_area_around_pedicel_scar_cm", "thickness_of_fruit_wall_skin_mm", "thickness_of_pericarp_mm", "size_of_score_mm", "number_of_locules",
+		"1000_seed_weight_g"];
 		
-		echo "asasas";
+		$arr_excel = $this->excel_to_array_char();
+
+		//echo sizeof($arr_excel);
+		// for($i=0 ;$i<=64 ;$i++){
+			// for($j=0 ;$j<=8 ;$j++){
+			// 	echo $arr_excel[$j][0]."  ";
+			// 	echo "<br/>";
+			//  }
+			
+		// }
+		$table_value = $this->table;
+		$input_check = $this->check_format($arr_excel,$format,0); 
+		print_r($input_check);
+
+		// if ($input_check[0]) {
+		// 	 for ($i = 0; $i < sizeof($arr_excel[0]) ;$i++) { // i=collum=65
+		// 	 	$num_id = 1;
+		// 		if ($i == 0) { //เชคแถวแรก
+		// 			for ($j = 0; $j < sizeof($arr_excel); $j++) {  // j=row=8
+		// 				$ex_list[j][i] = prepare_data($ex_list[j][i]); //แถวขยับ คอลัม 0 
+		// 				acc.push(searchdata(ex_list[j][i])); //acc เก็บ data จาก db
+	
+		// 				// console.log("ex="+ex_list[j][i]);
+		// 				// console.log("acc="+acc);
+	
+		// 				if (i == 0 && j == 0) 
+		// 					$("#col_" + i).append("<th>" + ex_list[j][i] + "</th>"); //แสดง head จาก excel ที่ตรงกับ db
+	
+		// 				else if (search_id(ex_list[j][i]) && i == 0) { //access number จาก excel มีใน db ไหม
+		// 					id.push(ex_list[j][i]); //id เก็บ access number 
+		// 					$("#col_" + i).append(`<th>` + ex_list[j][i] + `<lable style="font-weight:normal">Replace All</lable> 
+		// 					<input data-colum="NO` + j + `"class="NO_All NO_All` + j + `_check" type="checkbox" checked/></th>`);
+							
+		// 				} else if (i == 0) { //access number ที่ add เพิ่มเข้ามาจาก excel ไม่มีอยู่ใน db
+		// 					$("#col_" + i).append(`<th>` + ex_list[j][i] + `<lable style="font-weight:normal">  
+		// 					Add </lable> <input data-colum="NO` + j + `" class="NO` + j + `_INSERT NO_All` + j + `_check" type="checkbox" checked/></th>`);
+		// 				}
+		// 			}
+		// 		} 
+
+				// else { //เชคแถวที่2 เป็นต้นไป i>=1
+				// 	$("tbody").append("<tr id='col_" + i + "'>");
+	
+				// 	for (var j = 0; j < ex_list.length; j++) { //data แต่ละคอลัม
+				// 		ex_list[j][i] = prepare_data(ex_list[j][i]); 
+					   
+				// 		if (j == 0) {
+				// 			$("#col_" + i).append("<td>" + ex_list[j][i] + "</td>");
+	
+				// 		} else if (ex_list[j][0] == id[num_id - 1]) { //ถ้าaccess number จาก excel == id[...] ที่ push มาตอนเชคมาตอนเชคว่า else if (search_id(ex_list[j][i]) && i == 0)
+				// 			num_id++;
+				// 			if (ex_list[j][i] != acc[j][head[i]]) { 
+				// 				 console.log("i="+i+" "+head[i]);
+				// 				// console.log("ex["+i+"]="+ex_list[j][i]);
+				// 				 console.log(acc);
+	
+				// 				var data1 = acc[j][head[i]];
+				// 				var data2 = ex_list[j][i];
+	
+				// 				if ($.isNumeric(acc[j][head[i]])){ 
+				// 					data1 = toFixed(acc[j][head[i]], 2);
+				// 					// console.log("data = "+data1);
+				// 				}
+									
+				// 				if ($.isNumeric(ex_list[j][i])){
+				// 					data2 = toFixed(ex_list[j][i], 2);
+				// 					// console.log("excel ["+j+"]["+i+"]="+data2);
+				// 				}
+									
+				// 				if (data1 != data2 && data1 != null && data2 != null) {
+				// 					var oob = null;
+				// 					var check_value_table = true;
+	
+				// 					// console.log("ij["+j+"]["+i+"]="); 
+				// 					// console.log(table_value[head[i]]); //object of ตำแหน่งที่ผิดหรือถูกแล้วที่ของไฟล excel แต่ยังไม่ได้ upload
+				// 					//print_r(table_value[head[i]]);
+									
+	
+				// 					if (table_value[head[i]]) { //object 
+				// 						oob = Object.values(table_value[head[i]]); //Array
+				// 						// console.log(oob); 
+	
+				// 						if (oob.indexOf(data2) == -1) { //ตำแหน่งที่ผิด(สีแดง)ใน excel ค่า
+				// 							check_value_table = false;
+				// 							// console.log("oob=");
+				// 							// console.log(oob.indexOf(data2)); 
+				// 						}
+				// 					}
+	
+				// 					if (!check_value_table) { //ถ้าผิดไปทำตารางสีแดง
+				// 						$("#col_" + i).append(`<td class='bg-danger' id='` + ex_list[j][0] + `-` + head[i] + `'>                       
+				// 						<input type='hidden' name="NO` + j + `[]" value="update">
+				// 						<input type='hidden' name="NO` + j + `[]" value="` + ex_list[j][0] + `">                           
+				// 						<input type='checkbox' name="NO` + j + `[]" value="` + head[i] + `@` + data2 + `" checked>
+				// 							<lable style="font-weight:normal" class='new'>` + data2 + `</lable>
+				// 						<div>` + data1 + `,<span class='new'>` + data2 + `</span>
+				// 						</div></td>`);
+				// 					} else { //ถ้าถูก
+				// 						if ($.isNumeric(data2) && data2.toString().trim().length != 0 && int_value.indexOf(head[i]) != -1) {
+				// 							$("#col_" + i).append(`<td class='table-danger ' id='` + ex_list[j][0] + `-` + head[i] + `'>                       
+				// 							<input type='hidden' name="NO` + j + `[]" value="update">
+				// 							<input type='hidden' name="NO` + j + `[]" value="` + ex_list[j][0] + `">                           
+				// 							<input type='checkbox' name="NO` + j + `[]" value="` + head[i] + `@` + data2 + `" checked>
+				// 								<lable style="font-weight:normal" class='new'>` + data2 + `</lable>
+				// 							<div>` + data1 + `,<span class='new'>` + data2 + `</span>
+				// 							</div></td>`);
+	
+				// 						} else if (int_value.indexOf(head[i]) == -1) {
+				// 							$("#col_" + i).append(`<td class='table-danger ' id='` + ex_list[j][0] + `-` + head[i] + `'>                       
+				// 							<input type='hidden' name="NO` + j + `[]" value="update">
+				// 							<input type='hidden' name="NO` + j + `[]" value="` + ex_list[j][0] + `">                           
+				// 							<input type='checkbox' name="NO` + j + `[]" value="` + head[i] + `@` + data2 + `" checked>
+				// 								<lable style="font-weight:normal" class='new'>` + data2 + `</lable>
+				// 							<div>` + data1 + `,<span class='new'>` + data2 + `</span>
+				// 							</div></td>`);
+	
+				// 						} else {
+				// 							$("#col_" + i).append(`<td class='bg-danger ' id='` + ex_list[j][0] + `-` + head[i] + `'>                       
+				// 							<input type='hidden' name="NO` + j + `[]" value="update">
+				// 							<input type='hidden' name="NO` + j + `[]" value="` + ex_list[j][0] + `">                           
+				// 							<input type='checkbox' name="NO` + j + `[]" value="` + head[i] + `@` + data2 + `" checked>
+				// 								<lable style="font-weight:normal" class='new'>` + data2 + `</lable>
+				// 							<div>` + data1 + `,<span class='new'>` + data2 + `</span>
+				// 							</div></td>`);
+				// 						}
+				// 					}
+	
+				// 					if (chkLength == 0) {
+				// 						chkLength++;
+				// 						$("#col_" + i).append(`<input type='hidden' name='length' value='` + (ex_list.length) + `'>`);
+				// 					}
+				// 					} else if (data1 == null && data2 == '') {
+				// 						$("#col_" + i).append(`<td></td>`);
+				// 					} else if (data1 == null && data2 != '') {
+				// 						$("#col_" + i).append(`<td class='table-danger' id='` + ex_list[j][0] + `-` + head[i] + `'>                       
+				// 						<input type='hidden' name="NO` + j + `[]" value="update">
+				// 						<input type='hidden' name="NO` + j + `[]" value="` + ex_list[j][0] + `">                           
+				// 						<input type='checkbox' name="NO` + j + `[]" value="` + head[i] + `@` + data2 + `" checked>
+				// 							<lable style="font-weight:normal" class='new'>` + data2 + `</lable>
+				// 						<div> ,<span class='new'>` + data2 + `</span>
+				// 						</div></td>`);
+				// 						if (chkLength == 0) {
+				// 							chkLength++;
+				// 							$("#col_" + i).append(`<input type='hidden' name='length' value='` + (ex_list.length) + `'>`);
+				// 						}
+				// 					} else {
+				// 						$("#col_" + i).append(`<td>` + data1 + `</td>`);
+				// 					}
+	
+				// 			} else {
+				// 				$("#col_" + i).append("<td>" + acc[j][head[i]] + "</td>");
+				// 				// console.log("acc["+i+"]="+acc[j][head[i]]);
+				// 			}
+	
+				// 		} else { //ถ้าaccess number จาก excel != id[...] ที่ push มาตอนเชคมาตอนเชคว่า else if (search_id(ex_list[j][i]) && i == 0)
+				// 				//add เข้ามาใน excel *access numberใหม่ จะทำพื้นหลังเป็นสีฟ้าต่อจากปกติ ที่เหลือก็ทำเหมือนเดิมหมด
+				// 			$("#col_" + i).append(`<input type='hidden' name="NO` + j + `[]" value="insert">`);
+				// 				if (i == 1) {
+				// 					$("#col_" + i).append(`<input type='hidden' name="NO` + j + `[]" value="` + head[0] + `@` + ex_list[j][0] + `">`);
+				// 					$("#col_" + i).append(`<input type='hidden' name="NO` + j + `[]" value="insert">`);
+				// 				}
+	
+				// 				if (chkLength == 0) {
+				// 					chkLength++;
+				// 					$("#col_" + i).append(`<input type='hidden' name='length' value='` + (ex_list.length) + `'>`);
+				// 				}
+	
+				// 				var oob = null;
+				// 				var check_value_table = true;
+				// 				if (table_value[head[i]]) {
+				// 					oob = Object.values(table_value[head[i]]);
+				// 					if (oob.indexOf(ex_list[j][i]) == -1) {
+				// 						check_value_table = false;
+				// 					}
+				// 				}
+	
+				// 				if (!check_value_table) {
+				// 					$("#col_" + i).append(`<input type='hidden' id="` + ex_list[j][0] + `-` + head[i] + `" name="NO` + j + `[]" value="` 
+				// 					+ head[i] + `@` + ex_list[j][i] + `">`);
+	
+				// 					$("#col_" + i).append(`<td class='bg-danger-add' id="add-` + ex_list[j][0] + `-` + head[i] + `" data-dataval="` 
+				// 					+ ex_list[j][0] + `-` + head[i] + `">` + ex_list[j][i] + `</td>`);
+	
+				// 				} else {
+				// 					if ($.isNumeric(ex_list[j][i]) && ex_list[j][i].toString().trim().length != 0 && int_value.indexOf(head[i]) != -1) {
+				// 						$("#col_" + i).append(`<input type='hidden' name="NO` + j + `[]" value="` + head[i] + `@` + ex_list[j][i] + `">`);
+				// 						$("#col_" + i).append(`<td class='table-primary'>` + ex_list[j][i] + `</td>`);
+				// 					} else if (int_value.indexOf(head[i]) == -1) {
+				// 						$("#col_" + i).append(`<input type='hidden' name="NO` + j + `[]" value="` + head[i] + `@` + ex_list[j][i] + `">`);
+				// 						$("#col_" + i).append(`<td class='table-primary'>` + ex_list[j][i] + `</td>`);
+				// 					} else {
+				// 						$("#col_" + i).append(`<input type='hidden' id="` + ex_list[j][0] + `-` + head[i] + `" name="NO` + j + `[]" value="` 
+				// 						+ head[i] + `@` + ex_list[j][i] + `">`);
+	
+				// 						$("#col_" + i).append(`<td class='bg-danger-add' id="add-` + ex_list[j][0] + `-` + head[i] + `" data-dataval="` 
+				// 						+ ex_list[j][0] + `-` + head[i] + `">` + ex_list[j][i] + `</td>`);
+				// 					}
+				// 				}
+				// 		}
+				// 	}
+				// } //จบ else ของการเชคข้อมูล
+		// 	 } //จบลูป check 
+		// }
 
 	}
+
+	function check_format($array, $header, $index_accession) { //excel,format,0 เป็นฟังชันที่เอาไว้เชค head ของ table
+		//print_r(sizeof($array[0])."+++".sizeof($header));
+		echo sizeof($array);
+
+        if(sizeof($array[0]) == sizeof($header)){ //มีจำนวนคอลัม excel ตรงกลับใน format ?
+            $check = true;
+            for ($i = 0 ;$i < sizeof($array[0]) ;$i++) {
+				//echo $array[0][$i]."=".$header[$i]."<br>";
+				if ($array[0][$i] != $header[$i]) { //เชคว่าคอลัมที่ i แถวแรกของ excel ตรงกลับใน format ?
+                    $check = false; //ถ้ามีคอลัมที่ i ผิดตัวเดียวก็ออกจากลูป
+                    break;
+                }
+			}
+
+            if ($check) { //ทุกคอลัมของแถวแรก ตรงกับ format ทุกตัว
+				$duplicate = array();
+				
+                for ($i = 0 ;$i < sizeof($array) ;$i++) { //วนลูปแถวและคอลัม ของ excel ที่โหลดมา 8 แถว
+                    for ($j = 0 ;$j < sizeof($array) ;$j++) {
+                       if ($array[$i][$index_accession] == $array[$j][$index_accession] && $i != $j) { //เทียบแถว i กับ j คอลัมที่ index_accession = 0
+                	       if (array_search($array[$i][$index_accession],$duplicate) == -1 || sizeof($duplicate) == 0) //เชคว่าซ้ำไหม
+                               $duplicate.push($array[$i][$index_accession]); //duplicate เก็บค่าของ array[i][index_accession]	
+				 		}	
+                   	}
+				} 
+				print_r($duplicate); //=0
+                 if (sizeof($duplicate) != 0) { 
+                    echo "pin";
+                 } else {
+                     return [true, "asd"];
+                 }
+			} 
+			 else { //มีคอลัมแถวแรกใน excel ไม่ตรงกับ db
+                return [false, "Invalid excel template.Please download example file and upload again"]; 
+             }
+		} 
+		else { //จำนวนคอลัม excel ไม่ตรงกลับใน db
+            return [false, "Invalid excel template.Please download example file and upload again"];
+        } 
+    }
 	
 	
-		function prepare_data($data)
-		{
-			// กำหนดชื่อ filed ให้ตรงกับ $col_name ด้านบน
-			$arr_field = array();
-			if (is_array($data)) {
-				foreach ($arr_field as $v) {
-					if (!isset($data[$v])) {
-						$data[$v] = "";
-					}
+	function prepare_data($data)
+	{
+		// กำหนดชื่อ filed ให้ตรงกับ $col_name ด้านบน
+		$arr_field = array();
+		if (is_array($data)) {
+			foreach ($arr_field as $v) {
+				if (!isset($data[$v])) {
+					$data[$v] = "";
 				}
 			}
-			return $data;
 		}
+		return $data;
+	}
 
-		function search_id($item, $List1)
-		{
-			$chk = false;
-			for ($i = 0; $i < count($List1); $i++) {
-				if ($List1[$i]['accession_number'] == $item) {
-					$chk = true;
-					break;
-				}
+	function search_id($item, $List1)
+	{
+		$chk = false;
+		for ($i = 0; $i < count($List1); $i++) {
+			if ($List1[$i]['accession_number'] == $item) {
+				$chk = true;
+				break;
 			}
-			return $chk;
 		}
+		return $chk;
+	}
 
 	
-
 	public function check_type()
 	{
 		$check_type = $this->plant_type;
 		$name_type = "";
 		switch ($check_type) {
-			case 1: 
-				$name_type = "Character"; break;
-			case 2:
-				$name_type = "Location"; break;
 			default:
-				$name_type = "Genome"; break;
+				$name_type = "Genome";
 		}
 		return $name_type;
 	}
