@@ -15,7 +15,16 @@ class plant_manage extends Controller {
 		$data = $this->model->loadData();
         echo json_encode($data);
         // echo "ssss";
-	}
+    }
+    function update(){
+
+    }
+    function insert(){
+
+    }
+    function delete(){
+
+    }
 
 
 }

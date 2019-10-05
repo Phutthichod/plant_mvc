@@ -58,7 +58,7 @@
              break;
              default:
                  return '<script>
-                        //  document.getElementById("user_manage").classList.add("active");
+                        document.getElementById("user_manage").classList.add("active");
                          document.getElementById("plant_manage").classList.remove("active");
                          
                      </script>';

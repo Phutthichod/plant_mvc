@@ -48,6 +48,16 @@ class user_manage extends Controller {
 		$table = "user_plant_1";
 		$this->model->addList($table,$data);
 	}
+	function delete(){
+		
+	}
+	function add(){
+	
+	}
+	function update(){
+		
+	}
+
 	
 	
 	
