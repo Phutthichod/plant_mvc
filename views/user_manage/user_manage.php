@@ -1,3 +1,6 @@
+
+ <link rel="stylesheet" href="<?php echo URL; ?>vendors/select2/select2.min.css">
+    <link rel="stylesheet" href="<?php echo URL; ?>vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
 <link rel="stylesheet" href="<?php echo URL ?>views/user_manage/style.css">
         <h3>User Manangement</h3>
           <div class="card shadow">
@@ -106,7 +109,8 @@
 <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-
+<script src="<?php echo URL ?>vendors/select2/select2.min.js"></script>
+<script src="<?php echo URL ?>vendors/typeahead.js/typeahead.bundle.min.js"></script>
 
 
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -222,11 +226,11 @@ function editBlock(id,status){
     loaddata();
    
   function loaddata() {
-    // $('#example').DataTable().destroy();
+    $('#example').DataTable().destroy();
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-               let data = JSON.parse(this.responseText);
+               data = JSON.parse(this.responseText);
                 console.log(data);
                 let color_status = '';
                 let btn_color = '';

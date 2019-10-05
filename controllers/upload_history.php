@@ -28,6 +28,7 @@ class Upload_history extends Controller
 		//print_r($check);
 
 		$this->view->name_type = $this->check_type();
+		// echo $this->plant_type;
 		$this->view->render('upload_history/index');
 	}
 
@@ -138,8 +139,12 @@ class Upload_history extends Controller
 		$check_type = $this->plant_type;
 		$name_type = "";
 		switch ($check_type) {
+			case 1: 
+				$name_type = "Character"; break;
+			case 2:
+				$name_type = "Location"; break;
 			default:
-				$name_type = "Genome";
+				$name_type = "Genome"; break;
 		}
 		return $name_type;
 	}
