@@ -16,3 +16,9 @@ define('DB_PASS', '');
 define('URL', 'http://localhost/mvc_plant/');
 
 define('LIBS', 'libs/');
+<<<<<<< HEAD
+=======
+//pppp
+/efsdfsdf
+sadasdsadasdasdsadasdasdasdasddddddddddddddddddddddddddddddd
+>>>>>>> b578f30018119ca190b800e1dfa05022d6ea559a
