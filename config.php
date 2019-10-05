@@ -13,17 +13,8 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 
 
-<<<<<<< HEAD
 define('URL', 'http://localhost/plant_mvc/');
 
 define('LIBS', 'libs/');
-=======
-define('LIBS', 'libs/');
 
-=======
-define('URL', 'http://localhost/mvc_plant/');
 
-define('LIBS', 'libs/');
->>>>>>> 262c027a9b52ec1d333f02a3050e3779f4730e8d
-
->>>>>>> ae562b7fbc52615952b349d0472fb102e0bd1aa5

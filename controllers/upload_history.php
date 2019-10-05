@@ -20,10 +20,6 @@ class Upload_history extends Controller
 		$this->plant_id = Session::get('plant_id');
 	}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae562b7fbc52615952b349d0472fb102e0bd1aa5
 	public function index()
 	{
 		//Session:init();
@@ -36,10 +32,7 @@ class Upload_history extends Controller
 		$this->view->render('upload_history/index');
 	}
 
-<<<<<<< HEAD
-=======
 	//จาก helper
->>>>>>> ae562b7fbc52615952b349d0472fb102e0bd1aa5
 	public function excel_to_array_char()
 	{
 		// print_r($this->table) ;
@@ -92,93 +85,122 @@ class Upload_history extends Controller
 					// "BV"=>"73","BW"=>"74","BX"=>"75","BY"=>"76","BZ"=>"77","CA"=>"78","CB"=>"79","CC"=>"80",
 					// "CD"=>"81","CE"=>"82","CF"=>"83"
 				);
-					if ($row >= $start_row) {
-						$data_arr[$row - $start_row][$col_name[$column]] = $data_value;
-					}
+				if ($row >= $start_row) {
+					$data_arr_excel[$row - $start_row][$col_name[$column]] = $data_value;
 				}
-			//print_r($data_arr);
-			return $data_arr;
+			}
+			// print_r($data_arr_excel);
+			return $data_arr_excel;
 		}
-		
 	}
-	
-	function check_inva()
+	/*-----------Check function---------*/
+	//ถ้า return true ออกมาได้ แสดงว่าในส่วนของ fail ผ่านทุกเงื่อนไข 
+	function checkAll_char()
 	{
-		$arr_excel = $this->excel_to_array_char();
-		print_r($arr_excel);
-		
-		echo "asasas";
+		//เอาค่าจาก excel มาทำเป็น array
+		$data_all = $this->excel_to_array_char();
 
-	}
-	
-	
-		function prepare_data($data)
-		{
-			// กำหนดชื่อ filed ให้ตรงกับ $col_name ด้านบน
-			$arr_field = array();
-			if (is_array($data)) {
-				foreach ($arr_field as $v) {
-					if (!isset($data[$v])) {
-						$data[$v] = "";
+		//$check_misshead = $this->check_wornghead_char($data_all);
+		//echo ($check_misshead);
+
+			//เช็คว่า head เป็น null รึป่าว
+			 $check_misshead = $this->check_misshead_char($data_all);
+			if(!$check_misshead){ 
+				echo "miss";
+			}
+			else
+			{
+				//เช็คว่า head เป็น ถูกตาม format รึป่าว
+				$check_wronghead = $this->check_wornghead_char($data_all);
+				if(!$check_wronghead)
+				{
+					echo "worng";
+				}
+				else
+				{
+					//เช็คว่า accession number ซ้ำรึป่าว
+					$check_duplicate = $this->check_duplicate_char($data_all);
+					if(!$check_duplicate)
+					{
+						echo "dup";
+					}
+					else
+					{
+						return true;
 					}
 				}
 			}
-			return $data;
-		}
-
-		function search_id($item, $List1)
-		{
-			$chk = false;
-			for ($i = 0; $i < count($List1); $i++) {
-				if ($List1[$i]['accession_number'] == $item) {
-					$chk = true;
-					break;
-				}
-			}
-		}
-
-	
-
-
+			
+		 
+	}
+	/*-----------Check function---------*/
 	public function check_type()
 	{
 		$check_type = $this->plant_type;
 		$name_type = "";
 		switch ($check_type) {
-			case 1: 
-				$name_type = "Character"; break;
+			case 1:
+				$name_type = "Character";
+				break;
 			case 2:
-				$name_type = "Location"; break;
+				$name_type = "Location";
+				break;
 			default:
-				$name_type = "Genome"; break;
+				$name_type = "Genome";
+				break;
 		}
 		return $name_type;
 	}
 
 	/*----------------------------- Check fail characterristic fucntion ------------------------------------------*/
-	public function check_wrongHead_char()
+	public function check_misshead_char($data_arr_excel)
 	{
-		$check_head_char = true;
-		$data_arr_excel = $this->excel_to_array_char();
-		print_r($data_arr_excel);
-		$format = ["Accession number", "Hypocotyl colour", "Hypocotyl colour intensity", "Hypocotyl pubescence", "Primary leaf length (mm)", "Primary leaf width (mm)", "Plant growth type", "Plant size", "Vine length (cm)", "Stem pubescence density", "Stem internode length", "Foliage density", "Number of leaves under 1st inflorescence", "Leaf attitude", "Leaf type", "Degree of leaf dissection", "Anthocyanin colouration of leaf veins", "Inflorescence type", "Corolla colour", "Corolla blossom type", "Flower sterility type", "Petal length (cm)", "Sepal length (cm)", "Style position", "Style shape", "Style hairiness", "Stamen length (cm)", "Dehiscence", "Exterior colour of immature fruit", "Presence of green (shoulder) trips on the fruit", "Intensity of greenback", "Fruit pubescence", "Predominant fruit shape", "Fruit size", "Fruit size homogeneity", "Fruit weight (g)", "Fruit length (mm)", "Fruit width (mm)", "Exterior colour of mature fruit", "Intensity of exterior colour", "Ribbing at calyx end", "Easiness of fruit to detach from pedicel", "Fruit shoulder shape", "Pedicel length (mm)", "Pedicel length from abscission layer", "Presence/absence of jiontless pedicel", "Width of pedicel scar (mm)", "Size of corky area around pedicel scar (cm)", "Easiness of fruit wall (skin) to be peeled", "Skin colour of ripe fruit", "Thickness of fruit wall (skin) (mm)", "Thickness of pericarp (mm)", " Flesh colour of peiricarp (interior)", " Flesh colour intensity", "Colour (intensity) of core", "Fruit cross-sectional shape", "Size of score (mm)", "Number of locules", "Shape of pistil scar", "Fruit blossom end shape", "Blossom end scar condition", "Fruit firmness (after storage)", "Seed shape", "Seed colour", "1,000 seed weight (g)"];
-
-		$wrong_head = array();
-
-		if (sizeof($data_arr_excel[0]) == sizeof($format)) {
-			return $check_head_char;
-		} else {
-			for ($i = 0; $i < sizeof($data_arr_excel[0]); $i++) {
-				if ($data_arr_excel[0][i] == null) {
-					array_push($wrong_head, $i);
-				}
+		for ($i = 0; $i < sizeof($data_arr_excel[0]); $i++) {
+			if ($data_arr_excel[0][$i] == null) {
+				return false;
 			}
-			print_r($wrong_head);
-			//return $wrong_head;
 		}
+		return true;
 	}
 
+	public function check_duplicate_char($data_all)
+	{
 
+		for ($i = 0; $i < sizeof($data_all); $i++) {
+			for ($j = 0; $j < sizeof($data_all); $j++) {
+				if ($data_all[$i][0] == $data_all[$j][0] && $i != $j) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	public function check_wornghead_char($data_all)
+	{
+		$format = ["Accession number", "Hypocotyl colour", "Hypocotyl colour intensity", "Hypocotyl pubescence", 
+		"Primary leaf length (mm)", "Primary leaf width (mm)", "Plant growth type", "Plant size", "Vine length (cm)", 
+		"Stem pubescence density", "Stem internode length", "Foliage density", "Number of leaves under 1st inflorescence",
+		 "Leaf attitude", "Leaf type", "Degree of leaf dissection", "Anthocyanin colouration of leaf veins", "Inflorescence type", 
+		 "Corolla colour", "Corolla blossom type", "Flower sterility type", "Petal length (cm)", "Sepal length (cm)", "Style position", 
+		 "Style shape", "Style hairiness", "Stamen length (cm)", "Dehiscence", "Exterior colour of immature fruit", 
+		 "Presence of green (shoulder) trips on the fruit", "Intensity of greenback", "Fruit pubescence", "Predominant fruit shape",
+		  "Fruit size", "Fruit size homogeneity", "Fruit weight (g)", "Fruit length (mm)", "Fruit width (mm)",
+		   "Exterior colour of mature fruit", "Intensity of exterior colour", "Ribbing at calyx end", 
+		   "Easiness of fruit to detach from pedicel", "Fruit shoulder shape", "Pedicel length (mm)",
+			"Pedicel length from abscission layer", "Presence/absence of jiontless pedicel", "Width of pedicel scar (mm)", 
+			"Size of corky area around pedicel scar (cm)", "Easiness of fruit wall (skin) to be peeled", "Skin colour of ripe fruit", 
+			"Thickness of fruit wall (skin) (mm)", "Thickness of pericarp (mm)", " Flesh colour of peiricarp (interior)",
+			 " Flesh colour intensity", "Colour (intensity) of core", "Fruit cross-sectional shape", "Size of score (mm)",
+			  "Number of locules", "Shape of pistil scar", "Fruit blossom end shape", "Blossom end scar condition", 
+			  "Fruit firmness (after storage)", "Seed shape", "Seed colour", "1,000 seed weight (g)"];
+			//   echo sizeof($format).sizeof($data_all[0]);
+		for($i=0 ; $i<sizeof($data_all[0]);$i++)
+		{
+			if($data_all[0][$i] != $format[$i])
+				return false;
+		}
+		return true;
+	}
 
 
 	/*----------------------------- Check fail fucntion ------------------------------------------*/

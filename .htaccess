@@ -3,7 +3,7 @@ php_value error_reporting 9999
 
 RewriteEngine On
 RewriteBase /plant_mvc/
->>>>>>> ae562b7fbc52615952b349d0472fb102e0bd1aa5
+
 
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
