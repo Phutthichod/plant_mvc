@@ -78,7 +78,6 @@ class Char_data_Model extends Model {
         }
         return $table_value;
        
-
     }
 	
 

@@ -1,0 +1,17 @@
+.grid-item{
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+}
+.btn-add{
+    margin-bottom: 10px;
+}
+.btn.btn-fw {
+    height: 26px;
+    padding: 0;
+    min-width: 150px;
+}
+@media only screen and (min-width: 600px) {
+    #tableplant{
+        width: 200px;
+    }
+   }
