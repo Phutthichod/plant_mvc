@@ -166,7 +166,7 @@
                  <div class="m-4">
                      <h2>Upload <?php echo $this->name_type; ?> File </h2>
 
-                     <form id="upload" method="post" action="<?php echo URL ?>upload_history/checkAll_char" enctype="multipart/form-data">
+                     <form id="upload" method="post" action="<?php echo URL ?>upload_history/checkAll_location" enctype="multipart/form-data">
 
                          <div id="drop">
                              <a>Browse</a> <span class="font-20 padding-left-10"> Please select a file to upload.</span>

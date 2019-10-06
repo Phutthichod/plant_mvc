@@ -14,7 +14,7 @@ class Upload_history extends Controller
 	{
 		Auth::handleLogin();
 		parent::__construct();
-		$this->table = Char_data_Model::get_all_table_value();
+		$this->table = Location::get_all_table_value();
 		$this->user_id = Session::get('member')['id_member'];
 		$this->plant_type = Session::get('plant_type');
 		$this->plant_id = Session::get('plant_id');
@@ -32,7 +32,68 @@ class Upload_history extends Controller
 		$this->view->render('upload_history/index');
 	}
 
-	//จาก helper
+
+	public function excel_to_array_location()
+	{
+		$file = $_FILES['upl'];
+		include("libs/PHPExcel-1.8/Classes/PHPExcel.php");
+		$tmpFile = $file["tmp_name"];
+		$fileName = $file["name"];  // เก็บชื่อไฟล์
+		$info = pathinfo($fileName);
+		$allow_file = array("csv", "xls", "xlsx");
+		/*  print_r($info);         // ข้อมูลไฟล์   
+    print_r($_fileup);*/
+		if ($fileName != "" && in_array($info['extension'], $allow_file)) {
+			// อ่านไฟล์จาก path temp ชั่วคราวที่เราอัพโหลด
+			$objPHPExcel = PHPExcel_IOFactory::load($tmpFile);
+
+
+			// ดึงข้อมูลของแต่ละเซลในตารางมาไว้ใช้งานในรูปแบบตัวแปร array
+			$cell_collection = $objPHPExcel->getActiveSheet()->getCellCollection();
+
+			// วนลูปแสดงข้อมูล
+			$data_arr_excel = array();
+			foreach ($cell_collection as $cell) {
+				// ค่าสำหรับดูว่าเป็นคอลัมน์ไหน เช่น A B C ....
+				$column = $objPHPExcel->getActiveSheet()->getCell($cell)->getColumn();
+				// คำสำหรับดูว่าเป็นแถวที่เท่าไหร่ เช่น 1 2 3 .....
+				$row = $objPHPExcel->getActiveSheet()->getCell($cell)->getRow();
+				// ค่าของข้อมูลในเซลล์นั้นๆ เช่น A1 B1 C1 ....
+				$data_value = $objPHPExcel->getActiveSheet()->getCell($cell)->getValue();
+
+				// เริ่มขึ้นตอนจัดเตรียมข้อมูล
+				// เริ่มเก็บข้อมูลบรรทัดที่ 2 เป็นต้นไป
+				$start_row = 1;
+				// กำหนดชื่อ column ที่ต้องการไปเรียกใช้งาน
+				//$col_name[] = array( "A"=>"0");
+				//$col_name[] = array( "B"=>"1");
+				//print_r($col_name);
+				$col_name = array(
+					"A" => "0", "B" => "1", "C" => "2", "D" => "3", "E" => "4", "F" => "5", "G" => "6", "H" => "7", "I" => "8",
+					"J" => "9", "K" => "10", "L" => "11", "M" => "12", "N" => "13", "O" => "14", "P" => "15", "Q" => "16",
+					"R" => "17", "S" => "18", "T" => "19", "U" => "20", "V" => "21", "W" => "22", "X" => "23", "Y" => "24",
+					"Z" => "25", "AA" => "26", "AB" => "27", "AC" => "28", "AD" => "29", "AE" => "30"
+					//"AF"=>"31","AG"=>"32",
+					// "AH"=>"33","AI"=>"34","AJ"=>"35","AK"=>"36","AL"=>"37","AM"=>"38","AN"=>"39","AO"=>"40",
+					// "AP"=>"41","AQ"=>"42","AR"=>"43","AS"=>"44","AT"=>"45","AU"=>"46","AV"=>"47","AW"=>"48",
+					// "AX"=>"49","AY"=>"50","AZ"=>"51","BA"=>"52","BB"=>"53","BC"=>"54","BD"=>"55","BE"=>"56",
+					// "BF"=>"57","BG"=>"58","BH"=>"59","BI"=>"60","BJ"=>"61","BK"=>"62","BL"=>"63","BM"=>"64"
+					// "BN"=>"65","BO"=>"66","BP"=>"67","BQ"=>"68","BR"=>"69","BS"=>"70","BT"=>"71","BU"=>"72",
+					// "BV"=>"73","BW"=>"74","BX"=>"75","BY"=>"76","BZ"=>"77","CA"=>"78","CB"=>"79","CC"=>"80",
+					// "CD"=>"81","CE"=>"82","CF"=>"83"
+				);
+				if ($row >= $start_row) {
+					$data_arr_excel[$row - $start_row][$col_name[$column]] = $data_value;
+				}
+			}
+			return $data_arr_excel;
+		}
+	}
+
+
+
+
+	//จาก helper_char
 	public function excel_to_array_char()
 	{
 		// print_r($this->table) ;
@@ -93,7 +154,7 @@ class Upload_history extends Controller
 			return $data_arr_excel;
 		}
 	}
-	/*-----------Check function---------*/
+	/*-----------Check fail function char---------*/
 	//ถ้า return true ออกมาได้ แสดงว่าในส่วนของ fail ผ่านทุกเงื่อนไข 
 	function checkAll_char()
 	{
@@ -103,37 +164,57 @@ class Upload_history extends Controller
 		//$check_misshead = $this->check_wornghead_char($data_all);
 		//echo ($check_misshead);
 
-			//เช็คว่า head เป็น null รึป่าว
-			 $check_misshead = $this->check_misshead_char($data_all);
-			if(!$check_misshead){ 
-				echo "miss";
-			}
-			else
-			{
-				//เช็คว่า head เป็น ถูกตาม format รึป่าว
-				$check_wronghead = $this->check_wornghead_char($data_all);
-				if(!$check_wronghead)
-				{
-					echo "worng";
-				}
-				else
-				{
-					//เช็คว่า accession number ซ้ำรึป่าว
-					$check_duplicate = $this->check_duplicate_char($data_all);
-					if(!$check_duplicate)
-					{
-						echo "dup";
-					}
-					else
-					{
-						return true;
-					}
+		//เช็คว่า head เป็น null รึป่าว
+		$check_misshead = $this->check_misshead($data_all);
+		if (!$check_misshead) {
+			echo "miss";
+		} else {
+			//เช็คว่า head เป็น ถูกตาม format รึป่าว
+			$check_wronghead = $this->check_wornghead_char($data_all);
+			if (!$check_wronghead) {
+				echo "worng";
+			} else {
+				//เช็คว่า accession number ซ้ำรึป่าว
+				$check_duplicate = $this->check_duplicate($data_all);
+				if (!$check_duplicate) {
+					echo "dup";
+				} else {
+					return true;
 				}
 			}
-			
-		 
+		}
 	}
-	/*-----------Check function---------*/
+	/*-----------Check fail function location---------*/
+
+	function checkAll_location()
+	{
+		$data_all = $this->excel_to_array_location();
+		//print_r($data_all[0]);
+		$check_misshead = $this->check_misshead($data_all);
+		echo($check_misshead);
+
+		if (!$check_misshead) {
+			echo "miss";
+		} else {
+			//เช็คว่า head เป็น ถูกตาม format รึป่าว
+			$check_wronghead = $this->check_wornghead_location($data_all);
+			if (!$check_wronghead) {
+				echo "worng";
+			} else {
+				//เช็คว่า accession number ซ้ำรึป่าว
+				$check_duplicate = $this->check_duplicate($data_all);
+				if (!$check_duplicate) {
+					echo "dup";
+				} else {
+					//echo"all corect";
+					return true;
+				}
+			}
+		}
+	}
+
+
+
 	public function check_type()
 	{
 		$check_type = $this->plant_type;
@@ -152,8 +233,9 @@ class Upload_history extends Controller
 		return $name_type;
 	}
 
-	/*----------------------------- Check fail characterristic fucntion ------------------------------------------*/
-	public function check_misshead_char($data_arr_excel)
+
+	/*----------------------------- Check fail fucntion ------------------------------------------*/
+	public function check_misshead($data_arr_excel)
 	{
 		for ($i = 0; $i < sizeof($data_arr_excel[0]); $i++) {
 			if ($data_arr_excel[0][$i] == null) {
@@ -163,7 +245,7 @@ class Upload_history extends Controller
 		return true;
 	}
 
-	public function check_duplicate_char($data_all)
+	public function check_duplicate($data_all)
 	{
 
 		for ($i = 0; $i < sizeof($data_all); $i++) {
@@ -177,31 +259,48 @@ class Upload_history extends Controller
 	}
 	public function check_wornghead_char($data_all)
 	{
-		$format = ["Accession number", "Hypocotyl colour", "Hypocotyl colour intensity", "Hypocotyl pubescence", 
-		"Primary leaf length (mm)", "Primary leaf width (mm)", "Plant growth type", "Plant size", "Vine length (cm)", 
-		"Stem pubescence density", "Stem internode length", "Foliage density", "Number of leaves under 1st inflorescence",
-		 "Leaf attitude", "Leaf type", "Degree of leaf dissection", "Anthocyanin colouration of leaf veins", "Inflorescence type", 
-		 "Corolla colour", "Corolla blossom type", "Flower sterility type", "Petal length (cm)", "Sepal length (cm)", "Style position", 
-		 "Style shape", "Style hairiness", "Stamen length (cm)", "Dehiscence", "Exterior colour of immature fruit", 
-		 "Presence of green (shoulder) trips on the fruit", "Intensity of greenback", "Fruit pubescence", "Predominant fruit shape",
-		  "Fruit size", "Fruit size homogeneity", "Fruit weight (g)", "Fruit length (mm)", "Fruit width (mm)",
-		   "Exterior colour of mature fruit", "Intensity of exterior colour", "Ribbing at calyx end", 
-		   "Easiness of fruit to detach from pedicel", "Fruit shoulder shape", "Pedicel length (mm)",
-			"Pedicel length from abscission layer", "Presence/absence of jiontless pedicel", "Width of pedicel scar (mm)", 
-			"Size of corky area around pedicel scar (cm)", "Easiness of fruit wall (skin) to be peeled", "Skin colour of ripe fruit", 
+		$format = [
+			"Accession number", "Hypocotyl colour", "Hypocotyl colour intensity", "Hypocotyl pubescence",
+			"Primary leaf length (mm)", "Primary leaf width (mm)", "Plant growth type", "Plant size", "Vine length (cm)",
+			"Stem pubescence density", "Stem internode length", "Foliage density", "Number of leaves under 1st inflorescence",
+			"Leaf attitude", "Leaf type", "Degree of leaf dissection", "Anthocyanin colouration of leaf veins", "Inflorescence type",
+			"Corolla colour", "Corolla blossom type", "Flower sterility type", "Petal length (cm)", "Sepal length (cm)", "Style position",
+			"Style shape", "Style hairiness", "Stamen length (cm)", "Dehiscence", "Exterior colour of immature fruit",
+			"Presence of green (shoulder) trips on the fruit", "Intensity of greenback", "Fruit pubescence", "Predominant fruit shape",
+			"Fruit size", "Fruit size homogeneity", "Fruit weight (g)", "Fruit length (mm)", "Fruit width (mm)",
+			"Exterior colour of mature fruit", "Intensity of exterior colour", "Ribbing at calyx end",
+			"Easiness of fruit to detach from pedicel", "Fruit shoulder shape", "Pedicel length (mm)",
+			"Pedicel length from abscission layer", "Presence/absence of jiontless pedicel", "Width of pedicel scar (mm)",
+			"Size of corky area around pedicel scar (cm)", "Easiness of fruit wall (skin) to be peeled", "Skin colour of ripe fruit",
 			"Thickness of fruit wall (skin) (mm)", "Thickness of pericarp (mm)", " Flesh colour of peiricarp (interior)",
-			 " Flesh colour intensity", "Colour (intensity) of core", "Fruit cross-sectional shape", "Size of score (mm)",
-			  "Number of locules", "Shape of pistil scar", "Fruit blossom end shape", "Blossom end scar condition", 
-			  "Fruit firmness (after storage)", "Seed shape", "Seed colour", "1,000 seed weight (g)"];
-			//   echo sizeof($format).sizeof($data_all[0]);
-		for($i=0 ; $i<sizeof($data_all[0]);$i++)
-		{
-			if($data_all[0][$i] != $format[$i])
+			" Flesh colour intensity", "Colour (intensity) of core", "Fruit cross-sectional shape", "Size of score (mm)",
+			"Number of locules", "Shape of pistil scar", "Fruit blossom end shape", "Blossom end scar condition",
+			"Fruit firmness (after storage)", "Seed shape", "Seed colour", "1,000 seed weight (g)"
+		];
+		//   echo sizeof($format).sizeof($data_all[0]);
+		for ($i = 0; $i < sizeof($data_all[0]); $i++) {
+			if ($data_all[0][$i] != $format[$i])
 				return false;
 		}
 		return true;
 	}
 
+	public function check_wornghead_location($data_all)
+	{
+		$format = [
+			"Accession number", "TM Group", "Temporary number", "Other number", "Collector number", "Collector", "Crop collection", 
+			"Variety", "Seed amount_g", "Genus", "Species", "Collection date", "Grower name", "Donor name", "Address", 
+			"Sub district", "District", "Province", "Country", "Institute", "Usage", "Latitude", "Longitude", "Collection source", 
+			"Genetict status", "Sample type", "Material", "Photograpy", "Topography", "Soil texure", "Remark"
+		];
+
+		//   echo sizeof($format).sizeof($data_all[0]);
+		for ($i = 0; $i < sizeof($data_all[0]); $i++) {
+			if ($data_all[0][$i] != $format[$i])
+				return false;
+		}
+		return true;
+	}
 
 	/*----------------------------- Check fail fucntion ------------------------------------------*/
 
