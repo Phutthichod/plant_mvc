@@ -35,6 +35,7 @@ class Char_data_Model extends Model {
                 }
                 
     }
+
     public static function get_by_id_accession($id_accession_number)
     {            
         $result = new Char_data_Model;
@@ -61,6 +62,7 @@ class Char_data_Model extends Model {
             return false;
         }
     }
+
     public static function get_all_table_value()
     {
         $head =["hypocotyl_colour","hypocotyl_colour_intensity","hypocotyl_pubescence","plant_growth_type","plant_size","stem_pubescence_density","stem_internode_length","foliage_density","number_of_leaves_under_1st_inflorescence"
@@ -77,8 +79,11 @@ class Char_data_Model extends Model {
             $table_value[$key]=$result;
         }
         return $table_value;
-       
     }
+
+  
+
+
 	
 
 }

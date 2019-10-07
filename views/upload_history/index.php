@@ -165,8 +165,7 @@
              <div class="tab-pane fade active show" id="home-5-1" role="tabpanel" aria-labelledby="tab-5-1">
                  <div class="m-4">
                      <h2>Upload <?php echo $this->name_type; ?> File </h2>
-
-                     <form id="upload" method="post" action="<?php echo URL ?>upload_history/checkAll_char" enctype="multipart/form-data">
+                        <form id="upload" method="post" action="<?php echo URL ?>upload_history/checkAll_char" enctype="multipart/form-data">
 
                          <div id="drop">
                              <a>Browse</a> <span class="font-20 padding-left-10"> Please select a file to upload.</span>
@@ -181,19 +180,20 @@
 
              <!-- <div class="tab-pane fade" id="profile-5-2" role="tabpanel" aria-labelledby="tab-5-2">
                  <div class="m-4">
-                     <h2>Upload Location File </h2>
-                     <form id="upload_location" method="post" action="<?php echo URL ?>upload/check_data_location" enctype="multipart/form-data">
+                     <h2>Upload Location File <?php echo $this->name_type; ?> File </h2>
+                     <form id="upload_location" method="post" action="<?php echo URL ?>upload_history/checkAll_location" enctype="multipart/form-data">
+                         
                          <div id="drop">
                              <a>Browse</a> <span class="font-20 padding-left-10 upload_location"> Please select a file to upload.</span>
-                             <input id="file_upload_location" type="file" name="upl" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+                             <input id="file_upload_location" type="file" name="upl2" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
                          </div>
                          <p>**example file to upload<a class="green" href="<?php echo URL ?>public/example_location.xlsx" target="_blank" download="passport_data"><span class="padding-left-10"><i class="font-20 fas fa-file-upload"></i>download </span></a></p>
 
                          <button type="button" class="btn btn-success btn-block btn-upload-location">Upload</button>
                      </form>
-                 </div>
+                 </div> -->
              </div>
-             <div class="tab-pane fade" id="contact-5-3" role="tabpanel" aria-labelledby="tab-5-3">
+              <!-- <div class="tab-pane fade" id="contact-5-3" role="tabpanel" aria-labelledby="tab-5-3">
                  <div class="m-4">
                      <h2>Upload Genome File </h2>
                      <form id="upload_genome" method="post" action="<?php echo URL ?>upload/check_data_genome" enctype="multipart/form-data">
@@ -279,6 +279,8 @@
          $(".btn-upload-genome").before(`<span id="status_upload" class="red">Upload Failed</span>`);
      }
  </script>
+
+
  <script>
      $("#file_upload_location").change(function() {
          $(".font-20.padding-left-10.upload_location").empty();
@@ -342,6 +344,8 @@
          $(".btn-upload-location").before(`<span id="status_upload" class="red">Upload Failed</span>`);
      }
  </script>
+
+
  <script>
      $('#drop a').click(function() {
          $(this).parent().find('input').click();
