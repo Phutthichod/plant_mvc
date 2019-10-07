@@ -5,6 +5,7 @@ class Char_data_Model extends Model {
 	public function __construct() {
 		parent::__construct();
     }
+    
     public static function update_data()
     {
         $result = new Char_data_Model;
@@ -19,6 +20,7 @@ class Char_data_Model extends Model {
             //$con->db->update('accession_number',$data,"`id_accession_number` = {$data2}");
         }
     }
+
     public static function getAllFact()
     {           
                 $sql = 'SELECT * FROM cha_data_tomato';               

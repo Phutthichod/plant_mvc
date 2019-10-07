@@ -161,9 +161,9 @@
 
          <!-- Stop Tab Name Type -->
 
-         <div class="tab-content tab-content-solid">
-             <div class="tab-pane fade active show" id="home-5-1" role="tabpanel" aria-labelledby="tab-5-1">
-                 <div class="m-4">
+        <div class="tab-content tab-content-solid">
+            <div class="tab-pane fade active show" id="home-5-1" role="tabpanel" aria-labelledby="tab-5-1">
+                <div class="m-4">
                      <h2>Upload <?php echo $this->name_type; ?> File </h2>
                         <form id="upload" method="post" action="<?php echo URL ?>upload_history/checkAll_char" enctype="multipart/form-data">
 
@@ -171,47 +171,16 @@
                              <a>Browse</a> <span class="font-20 padding-left-10"> Please select a file to upload.</span>
                              <input id="file_upload" type="file" name="upl" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
                          </div>
-                         <p>**example file to upload<a class="green" href="<?php echo URL ?>public/example.xlsx" target="_blank" download="char_data"><span class="padding-left-10"><i class="font-20 fas fa-file-upload"></i>download </span></a></p>
+                            <p>**example file to upload<a class="green" href="<?php echo URL ?>public/example.xlsx" target="_blank" download="char_data"><span class="padding-left-10"><i class="font-20 fas fa-file-upload"></i>download </span></a></p>
 
-                         <button type="button" class="btn btn-success btn-block btn-upload">Upload</button>
-                     </form>
-                 </div>
+                            <button type="button" class="btn btn-success btn-block btn-upload">Upload</button>
+                        </form>
+                </div>
              </div>
-
-             <!-- <div class="tab-pane fade" id="profile-5-2" role="tabpanel" aria-labelledby="tab-5-2">
-                 <div class="m-4">
-                     <h2>Upload Location File <?php echo $this->name_type; ?> File </h2>
-                     <form id="upload_location" method="post" action="<?php echo URL ?>upload_history/checkAll_location" enctype="multipart/form-data">
-                         
-                         <div id="drop">
-                             <a>Browse</a> <span class="font-20 padding-left-10 upload_location"> Please select a file to upload.</span>
-                             <input id="file_upload_location" type="file" name="upl2" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
-                         </div>
-                         <p>**example file to upload<a class="green" href="<?php echo URL ?>public/example_location.xlsx" target="_blank" download="passport_data"><span class="padding-left-10"><i class="font-20 fas fa-file-upload"></i>download </span></a></p>
-
-                         <button type="button" class="btn btn-success btn-block btn-upload-location">Upload</button>
-                     </form>
-                 </div> -->
-             </div>
-              <!-- <div class="tab-pane fade" id="contact-5-3" role="tabpanel" aria-labelledby="tab-5-3">
-                 <div class="m-4">
-                     <h2>Upload Genome File </h2>
-                     <form id="upload_genome" method="post" action="<?php echo URL ?>upload/check_data_genome" enctype="multipart/form-data">
-                         <div id="drop">
-                             <a>Browse</a> <span class="font-20 padding-left-10 upload_genome"> Please select a file to upload.</span>
-                             <input id="file_upload_genome" type="file" name="upl" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
-                         </div>
-                         <p>**example file to upload<a class="green" href="<?php echo URL ?>public/testUploadGenome.xlsx" target="_blank" download="genome_data"><span class="padding-left-10"><i class="font-20 fas fa-file-upload"></i>download </span></a></p>
-
-                         <button type="button" class="btn btn-success btn-block btn-upload-genome">Upload</button>
-                     </form>
-                 </div>
-             </div> -->
-
-         </div>
-
-     </div>
- </div>
+        </div>
+         
+        </div>
+    </div>
 
  <script>
      var base_url = "<?php echo URL; ?>";
