@@ -47,7 +47,10 @@ class Location extends Model
     }
     public static function get_all_table_value()
     {
-        $head = ["tm_group", "temporary_number", "other_number", "collector_number", "collector", "crop_collection", "variety", "genus", "species", "grower_name", "donor_name","sub_district","district","province","country", "institute", "tb_usage", "collection_source", "genetict_status", "sample_type", "material", "photograpy", "topography", "soil_texure", "remark"];
+        $head = ["tm_group", "temporary_number", "other_number", "collector_number", "collector", "crop_collection", 
+        "variety", "genus", "species", "grower_name", "donor_name","sub_district","district","province","country", 
+        "institute", "tb_usage", "collection_source", "genetict_status", "sample_type", "material", "photograpy", 
+        "topography", "soil_texure", "remark"];
         $table_value = array();
         $con = new Location;
         foreach ($head as $key) {

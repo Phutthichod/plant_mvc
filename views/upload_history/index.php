@@ -148,24 +148,25 @@
      }
  </style>
  <!-- หน้าเว็บ -->
- <div class="card">
-     <div class="card-body">
+<div class="card">
+    <div class="card-body">
 
-         <!-- Start Tab Name Type -->
+        <!-- Start Tab Name Type -->
 
-         <ul class="nav nav-tabs tab-solid tab-solid-danger" role="tablist">
+        <ul class="nav nav-tabs tab-solid tab-solid-danger" role="tablist">
              <li class="nav-item">
                  <a class="nav-link" id="tabname" role="tab" aria-controls="home-5-1"><?php echo $this->name_type; ?> </a>
              </li>
-         </ul>
+        </ul>
 
-         <!-- Stop Tab Name Type -->
+        <!-- Stop Tab Name Type -->
 
         <div class="tab-content tab-content-solid">
             <div class="tab-pane fade active show" id="home-5-1" role="tabpanel" aria-labelledby="tab-5-1">
                 <div class="m-4">
                      <h2>Upload <?php echo $this->name_type; ?> File </h2>
-                        <form id="upload" method="post" action="<?php echo URL ?>upload_history/checkAll_char" enctype="multipart/form-data">
+
+                        <form id="upload" method="post" action="<?php echo URL ?>upload_history/checkAll_location" enctype="multipart/form-data">
 
                          <div id="drop">
                              <a>Browse</a> <span class="font-20 padding-left-10"> Please select a file to upload.</span>
@@ -179,12 +180,13 @@
              </div>
         </div>
          
-        </div>
     </div>
+</div>
 
  <script>
      var base_url = "<?php echo URL; ?>";
  </script>
+
  <script>
      $("#file_upload_genome").change(function() {
          $(".font-20.padding-left-10.upload_genome").empty();

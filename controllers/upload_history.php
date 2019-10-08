@@ -8,75 +8,79 @@ class Upload_history extends Controller
 	private $user_id;
 	private $plant_id;
 	private $plant_type;
-
-	private $table;
+	private $table_char;
+	private $table_location;
 
 	public function __construct()
 	{
 		Auth::handleLogin();
 		parent::__construct();
-		$this->table = Char_data_Model::get_all_table_value();
+		$this->table_char = Char_data_Model::get_all_table_value();
+		$this->table_location = Location::get_all_table_value();
+
 		$this->user_id = Session::get('member')['id_member'];
 		$this->plant_type = Session::get('plant_type');
 		$this->plant_id = Session::get('plant_id');
 	}
-
-	public function excel_to_array_location()
+	
+	function checkAll_char()
 	{
-		$file = $_FILES['upl'];
-		include("libs/PHPExcel-1.8/Classes/PHPExcel.php");
-		$tmpFile = $file["tmp_name"];
-		$fileName = $file["name"];  // เก็บชื่อไฟล์
-		$info = pathinfo($fileName);
-		$allow_file = array("csv", "xls", "xlsx");
-		/*  print_r($info);         // ข้อมูลไฟล์   
-    	print_r($_fileup);*/
-		if ($fileName != "" && in_array($info['extension'], $allow_file)) {
-			// อ่านไฟล์จาก path temp ชั่วคราวที่เราอัพโหลด
-			$objPHPExcel = PHPExcel_IOFactory::load($tmpFile);
-
-			// ดึงข้อมูลของแต่ละเซลในตารางมาไว้ใช้งานในรูปแบบตัวแปร array
-			$cell_collection = $objPHPExcel->getActiveSheet()->getCellCollection();
-
-			// วนลูปแสดงข้อมูล
-			$data_arr_excel = array();
-			foreach ($cell_collection as $cell) {
-				// ค่าสำหรับดูว่าเป็นคอลัมน์ไหน เช่น A B C ....
-				$column = $objPHPExcel->getActiveSheet()->getCell($cell)->getColumn();
-				// คำสำหรับดูว่าเป็นแถวที่เท่าไหร่ เช่น 1 2 3 .....
-				$row = $objPHPExcel->getActiveSheet()->getCell($cell)->getRow();
-				// ค่าของข้อมูลในเซลล์นั้นๆ เช่น A1 B1 C1 ....
-				$data_value = $objPHPExcel->getActiveSheet()->getCell($cell)->getValue();
-
-				// เริ่มขึ้นตอนจัดเตรียมข้อมูล
-				// เริ่มเก็บข้อมูลบรรทัดที่ 2 เป็นต้นไป
-				$start_row = 1;
-				// กำหนดชื่อ column ที่ต้องการไปเรียกใช้งาน
-				//$col_name[] = array( "A"=>"0");
-				//$col_name[] = array( "B"=>"1");
-				//print_r($col_name);
-				$col_name = array(
-					"A" => "0", "B" => "1", "C" => "2", "D" => "3", "E" => "4", "F" => "5", "G" => "6", "H" => "7", "I" => "8",
-					"J" => "9", "K" => "10", "L" => "11", "M" => "12", "N" => "13", "O" => "14", "P" => "15", "Q" => "16",
-					"R" => "17", "S" => "18", "T" => "19", "U" => "20", "V" => "21", "W" => "22", "X" => "23", "Y" => "24",
-					"Z" => "25", "AA" => "26", "AB" => "27", "AC" => "28", "AD" => "29", "AE" => "30"
-					//"AF"=>"31","AG"=>"32",
-					// "AH"=>"33","AI"=>"34","AJ"=>"35","AK"=>"36","AL"=>"37","AM"=>"38","AN"=>"39","AO"=>"40",
-					// "AP"=>"41","AQ"=>"42","AR"=>"43","AS"=>"44","AT"=>"45","AU"=>"46","AV"=>"47","AW"=>"48",
-					// "AX"=>"49","AY"=>"50","AZ"=>"51","BA"=>"52","BB"=>"53","BC"=>"54","BD"=>"55","BE"=>"56",
-					// "BF"=>"57","BG"=>"58","BH"=>"59","BI"=>"60","BJ"=>"61","BK"=>"62","BL"=>"63","BM"=>"64"
-					// "BN"=>"65","BO"=>"66","BP"=>"67","BQ"=>"68","BR"=>"69","BS"=>"70","BT"=>"71","BU"=>"72",
-					// "BV"=>"73","BW"=>"74","BX"=>"75","BY"=>"76","BZ"=>"77","CA"=>"78","CB"=>"79","CC"=>"80",
-					// "CD"=>"81","CE"=>"82","CF"=>"83"
-				);
-				if ($row >= $start_row) {
-					$data_arr_excel[$row - $start_row][$col_name[$column]] = $data_value;
+		//เอาค่าจาก excel มาทำเป็น array
+		$data_all = $this->excel_to_array_char();
+		$check_misshead = $this->check_misshead($data_all);
+		if (!$check_misshead) {
+			echo "หัวตารางไม่ใส่ค่า";
+		} else {
+			//เช็คว่า head เป็น ถูกตาม format รึป่าว
+			$check_wronghead = $this->check_wornghead_char($data_all);
+			if (!$check_wronghead) {
+				echo "ชื่อหัวตารางผิด";
+			} 
+			$check_null = $this->check_null_char($data_all);
+			if(!$check_null){
+				echo "ไม่ใส่ชื่อ access number หรือ access number = '-' ";
+			} else {
+				//เช็คว่า accession number ซ้ำรึป่าว
+				$check_duplicate = $this->check_duplicate($data_all);
+				if (!$check_duplicate) {
+					echo "มีaccess number ซ้ำ";
+				} else {
+					echo "ถูกทั้งหมด"."<br>";
+					$this->check_invalid_char($data_all);
 				}
 			}
-			return $data_arr_excel;
 		}
 	}
 	
+	function checkAll_location()
+	{
+		$data_all = $this->excel_to_array_location();
+		//print_r($data_all);
+
+		$check_misshead = $this->check_misshead($data_all);
+		if (!$check_misshead) {
+			echo "หัวตารางไม่ใส่ค่า";
+		}
+		$check_null = $this->check_null_char($data_all);
+			if(!$check_null){
+				echo "ไม่ใส่ชื่อ access number หรือ access number = '-' ";
+		} else {
+			$check_wronghead = $this->check_wornghead_location($data_all);
+			if (!$check_wronghead) {
+				echo "ชื่อหัวตารางผิด";
+			} else {
+				$check_duplicate = $this->check_duplicate($data_all);
+				if (!$check_duplicate) {
+					echo "มีaccess number ซ้ำ";
+				} else {
+					echo "ถูกทั้งหมด"."<br>";
+					$this->check_invalid_location($data_all);
+				}
+			}
+		}
+	}
+
+	/*----------------------------- fucntion excel to arr ------------------------------------------*/
 	public function excel_to_array_char()
 	{
 		$file = $_FILES['upl'];
@@ -132,7 +136,43 @@ class Upload_history extends Controller
 		}
 	}
 
-	function check_invalid_char($data_all_excel){
+	public function excel_to_array_location()
+	{
+		$file = $_FILES['upl'];
+		include("libs/PHPExcel-1.8/Classes/PHPExcel.php");
+		$tmpFile = $file["tmp_name"];
+		$fileName = $file["name"];  
+		$info = pathinfo($fileName);
+		$allow_file = array("csv", "xls", "xlsx");
+	
+		if ($fileName != "" && in_array($info['extension'], $allow_file)) {
+			$objPHPExcel = PHPExcel_IOFactory::load($tmpFile);
+			$cell_collection = $objPHPExcel->getActiveSheet()->getCellCollection();
+			$data_arr_excel = array();
+			foreach ($cell_collection as $cell) {
+				$column = $objPHPExcel->getActiveSheet()->getCell($cell)->getColumn();
+				$row = $objPHPExcel->getActiveSheet()->getCell($cell)->getRow();
+				$data_value = $objPHPExcel->getActiveSheet()->getCell($cell)->getValue();
+				$start_row = 1;
+				$col_name = array(
+					"A" => "0", "B" => "1", "C" => "2", "D" => "3", "E" => "4", "F" => "5", "G" => "6", "H" => "7", "I" => "8",
+					"J" => "9", "K" => "10", "L" => "11", "M" => "12", "N" => "13", "O" => "14", "P" => "15", "Q" => "16",
+					"R" => "17", "S" => "18", "T" => "19", "U" => "20", "V" => "21", "W" => "22", "X" => "23", "Y" => "24",
+					"Z" => "25", "AA" => "26", "AB" => "27", "AC" => "28", "AD" => "29", "AE" => "30"
+				);
+				if ($row >= $start_row) {
+					$data_arr_excel[$row - $start_row][$col_name[$column]] = $data_value;
+				}
+			}
+			return $data_arr_excel;
+		}
+	}
+	/*----------------------------- fucntion excel to arr ------------------------------------------*/
+
+
+	/*----------------------------- Check invalid fucntion ------------------------------------------*/
+	function check_invalid_char($data_all_excel)
+	{
 		$format = ["Accession number", "Hypocotyl colour", "Hypocotyl colour intensity", "Hypocotyl pubescence", 
 		"Primary leaf length (mm)", "Primary leaf width (mm)", "Plant growth type", "Plant size", "Vine length (cm)", 
 		"Stem pubescence density", "Stem internode length", "Foliage density", "Number of leaves under 1st inflorescence",
@@ -165,7 +205,7 @@ class Upload_history extends Controller
 		"shape_of_pistil_scar", "fruit_blossom_end_shape", "blossom_end_scar_condition", "fruit_firmness_after_storage", "seed_shape", 
 		"seed_colour", "1000_seed_weight_g"]; //65
 
-		$data_db = $this->table; //sizeof($data_db)=46 print_r($data_db);
+		$data_db = $this->table_char; //sizeof($data_db)=46 print_r($data_db);
 		$int_value = ["primary_leaf_length_mm", "primary_leaf_width_mm", "vine_length_cm", "petal_length_cm", "sepal_length_cm", "stamen_length_cm", 
 		"fruit_weight_g", "fruit_length_mm", "fruit_width_mm", "pedicel_length_mm", "pedicel_length_from_abscission_layer", "width_of_pedicel_scar_mm", 
 		"size_of_corky_area_around_pedicel_scar_cm", "thickness_of_fruit_wall_skin_mm", "thickness_of_pericarp_mm", "size_of_score_mm", "number_of_locules",
@@ -244,98 +284,140 @@ class Upload_history extends Controller
 		print_r($arr_inval_2);
 	}
 
-	function checkAll_char()
+	function check_invalid_location($data_all_excel)
 	{
-		//เอาค่าจาก excel มาทำเป็น array
-		$data_all = $this->excel_to_array_char();
-		$check_misshead = $this->check_misshead($data_all);
-		if (!$check_misshead) {
-			echo "miss";
-		} else {
-			//เช็คว่า head เป็น ถูกตาม format รึป่าว
-			$check_wronghead = $this->check_wornghead_char($data_all);
-			if (!$check_wronghead) {
-				echo "worng";
-			} 
-			$check_null = $this->check_null_char($data_all);
-			if(!$check_null){
-				echo "ไม่ใส่ชื่อ access number";
-			} else {
-				//เช็คว่า accession number ซ้ำรึป่าว
-				$check_duplicate = $this->check_duplicate($data_all);
-				if (!$check_duplicate) {
-					echo "dup";
-				} else {
-					echo "123"."<br>";
-					$this->check_invalid_char($data_all);
+		$format = ["Accession number", "TM Group", "Temporary number", "Other number", "Collector number", 
+		"Collector", "Crop collection", "Variety", "Seed amount_g", "Genus", "Species", "Collection date", 
+		"Grower name", "Donor name", "Address", "Sub district", "District", "Province", "Country", "Institute", 
+		"Usage", "Latitude", "Longitude", "Collection source", "Genetict status", "Sample type", "Material", 
+		"Photograpy", "Topography", "Soil texure", "Remark"]; //31
 
-					//return true;
+		$head = ["accession_number","tm_group", "temporary_number", "other_number", "collector_number", "collector", 
+		"crop_collection", "variety", "seed_amount_g" ,"genus", "species", "collection_date", "grower_name", 
+		"donor_name", "address", "sub_district","district", "province","country", 
+		"institute", "tb_usage", "latitude", "longitude", "collection_source", "genetict_status", "sample_type", "material",
+		"photograpy", "topography", "soil_texure", "remark"]; //31
+		
+		//"Accession number","Collection date",
+		
+		$int_value = ["seed_amount_g", "address", "latitude", "longitude"]; //4
+
+		$data_db = $this->table_location; //echo sizeof($data_db); //=25;
+
+		//1.check list
+		$arr_inval_1 = [];
+		$cou_1 = 0;
+		$ch_1 = false;
+		// foreach ($data_db as $key1 => $value1) {
+		// 	//echo "$key1 = $value1 ".sizeof($value1)."<br>";
+		// 	for($i=0; $i < sizeof($head); $i++){
+		// 		if($head[$i] == $key1){
+		// 			//echo $i." => ".$key1." = ".$head[$i]."<br>";
+		// 			for($j=0; $j < sizeOf($value1); $j++){
+		// 				//echo $j." ".$value1[$j]."<br>";;
+		// 				for($k=0; $k < sizeof($data_all_excel) ;$k++){
+		// 					//echo $value1[$j][0]."<br>";
+		// 					for($l=0; $l < sizeof($value1[$j]); $l++){
+		// 						if($data_all_excel[$k][$i] == $value1[$j][0]){
+		// 							echo "[$k][$i] =".$data_all_excel[$k][$i]."= ". $value1[$j][0]."<br>";
+		// 							$ch_1 = true;
+		// 							break;
+		// 						}
+		// 						else{
+		// 							$ch_1 = false;
+		// 						}
+		// 					}
+
+		// 					if(!$ch_1){
+		// 						$arr_inval_1[$cou_1] = [$l,$i];
+		// 						$cou_1++;
+
+		// 					}
+		// 				}
+		// 			}
+		// 			echo "<br>";
+		// 		}
+		// 	}
+		// }
+
+		foreach ($data_db as $key1 => $value1) {
+		// 	//echo "$key1 = $value1 ".sizeof($value1)."<br>";
+
+			for($i=0; $i < sizeof($head); $i++){
+				if($head[$i] == $key1){
+					//echo $i." => ".$key1." = ".$head[$i]."<br>";
+					$ch_1 = true;
+					break;
 				}
 			}
-		}
-	}
-	
-	/*-----------Check fail function location---------*/
-	function checkAll_location()
-	{
-		$data_all = $this->excel_to_array_location();
-		//print_r($data_all[0]);
-		$check_misshead = $this->check_misshead($data_all);
-		echo($check_misshead);
 
-		if (!$check_misshead) {
-			echo "miss";
-		} else {
-			//เช็คว่า head เป็น ถูกตาม format รึป่าว
-			$check_wronghead = $this->check_wornghead_location($data_all);
-			if (!$check_wronghead) {
-				echo "worng";
-			} else {
-				//เช็คว่า accession number ซ้ำรึป่าว
-				$check_duplicate = $this->check_duplicate($data_all);
-				if (!$check_duplicate) {
-					echo "dup";
-				} else {
-					echo"all corect";
-					//return true;
+			if($ch_1){
+				for($j=0; $j < sizeOf($value1); $j++){
+					//echo $j." ".$value1[$j]."<br>";;
+					for($k=0; $k < sizeof($value1[$j]) ;$k++){
+						//echo $value1[$j][0]."<br>";
+						for($l=0; $l < sizeof($data_all_excel); $l++){
+							
+							if($data_all_excel[$l][$i] == $value1[$j][0]){
+								//echo $head[$i]."  [$l][$i] =".$data_all_excel[$l][$i]."= ". $value1[$j][0]."<br>";
+								// $ch_1 = true;
+								// break;
+							}
+							// else{
+							// 	$ch_1 = false;
+							// }
+						}
+						// if(!$ch_1){
+						// 	$arr_inval_1[$cou_1] = [$l,$i];
+						// 	$cou_1++;
+						// }
+					}
+					
+				}	
+				echo "<br>";
+			}
+
+		}
+		echo $cou_1."++++++++++++";
+		 //print_r($arr_inval_1);
+
+		//2.check number
+		$arr_inval_2 = [];
+		$cou_2 = 0;
+		$ch_2 = false;
+		for($i=0 ;$i < sizeof($int_value) ;$i++){
+			
+			for($j=0 ;$j < sizeof($head) ;$j++){
+				if($head[$j] == $int_value[$i]){
+					break;
+					//echo $int_value[$i] ." =  ".$head[$j];
 				}
 			}
-		}
-	}
 
-	function checkAll_char2()
-	{
-		//เอาค่าจาก excel มาทำเป็น array
-		$data_all_excel = $this->excel_to_array_char(); //sizeof($data_all_excel)=8 sizeof($data_all_excel[0])=65
-
-		//$check_misshead = $this->check_wornghead_char($data_all);
-		//echo ($check_misshead);
-		//เช็คว่า head เป็น null รึป่าว
-		$check_misshead = $this->check_misshead_char($data_all_excel);
-		if(!$check_misshead) { 
-			echo "มีหัวตารางไม่ใส่ค่า";
-			//return false;
-		} else {
-			//เช็คว่า head เป็น ถูกตาม format รึป่าว
-			$check_wronghead = $this->check_wornghead_char($data_all_excel);
-			if(!$check_wronghead) {
-				echo "ชื่อหัวตารางผิด";
-			}
-			$check_null = $this->check_null_char($data_all_excel);
-			if(!$check_null){
-				echo "ไม่ใส่ชื่อ access number";
-			} else {
-				//เช็คว่า accession number ซ้ำรึป่าว
-				$check_duplicate = $this->check_duplicate_char($data_all_excel);
-				if(!$check_duplicate) {
-					echo "มีaccess number ซ้ำ";
-				} else {
-					echo "ถูกทั้งหมด"."<br>";
-					$this->check_invalid_char($data_all_excel);
+			for($k=1 ;$k < sizeof($data_all_excel)  ;$k++){
+				//echo $data_all_excel[$k][$j]."  ";
+				if($data_all_excel[$k][$j] < 0 || $data_all_excel[$k][$j] == null || $data_all_excel[$k][$j] == "-" || !(is_numeric( $data_all_excel[$k][$j]))    ){
+					$ch_2 = false;
+					$arr_inval_2[$cou_2] = [$k,$j];
+					$cou_2++;
 				}
 			}
+			//echo "<br>";
 		}
+		echo "<br>".$cou_2."++++++++++++";
+		print_r($arr_inval_2);
+
+
+		
+
+
 	}
+
+
+
+
+	/*----------------------------- Check invalid fucntion ------------------------------------------*/
+
 
 	/*----------------------------- Check fail fucntion ------------------------------------------*/
 	public function check_misshead($data_arr_excel)
